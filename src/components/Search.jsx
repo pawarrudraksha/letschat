@@ -30,7 +30,6 @@ const Search = () => {
 
     try {
       const res=await getDoc(doc(db,"chats",combinedId))  
-      console.log(res.data());
       if(!res.exists()){
         console.log('jofpe');
         // create a chat in chats collection

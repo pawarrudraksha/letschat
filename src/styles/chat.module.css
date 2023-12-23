@@ -1,5 +1,11 @@
-.chat{
+.chatContainer{
     flex: 2;
+    position: relative;
+
+}
+.chat{
+    position: relative;
+    height: 100%;
 }
 
 .chatInfo{
@@ -20,4 +26,69 @@
     color: white;
     height: 24px;
     width: 24px;
+}
+
+.overlay {
+    position: absolute;
+    top: 9%;
+    right: 0%;
+ 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu {
+    list-style: none;
+    background: #5d5b8d;
+    border-radius: 5px;
+    padding: 0px;
+    
+}
+
+.menu li{
+    border: 1px solid black;
+    color: white;
+    padding: 10px 15px;
+    font-size: 15px;
+    cursor: pointer;
+}
+.menu li:hover{
+    background-color: #9e9cc3;
+}
+
+.contactInfoOverlay{
+    position: absolute;
+    top: 0%;
+    right: 0%;
+    display: flex;
+    height: 100%;
+    width: 300px;
+    justify-content: center;
+    align-items: center;
+}
+
+.contactInfoMenu{
+    height: 77%;
+    width: 300px;
+    background: #5d5b8d ;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    align-items: center;
+    
+}
+.contactInfoMenu img{
+    height: 200px;
+    width: 200px;
+    border-radius: 100px;
+}
+
+.backButton{
+    align-self: flex-start;
+}
+
+.backButton svg{
+    height: 30px;
+    width: 30px;
 }

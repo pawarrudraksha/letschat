@@ -16,6 +16,7 @@ const Input = () => {
 
   const [text,setText]=useState("")
   const [img,setImg]=useState(null)
+  const [file,setFile]=useState(null)
 
   const handleSend=async()=>{
 
@@ -34,7 +35,22 @@ const Input = () => {
             img:downloadURL
           })
         })
-      }else{
+      }else if(file){
+        const storageRef=ref(storage,uuid())
+        const uploadTaskSnapshot = await uploadBytesResumable(storageRef,file);
+        const downloadURL = await getDownloadURL(uploadTaskSnapshot.ref);
+    
+        await updateDoc(doc(db,"chats",data.chatId),{
+          messages: arrayUnion({
+            id:uuid(),
+            text,
+            senderId:currentUser.uid,
+            data:Timestamp.now(),
+            file:downloadURL
+          })
+        })
+      }
+      else{
         await updateDoc(doc(db,"chats",data.chatId),{
           messages: arrayUnion({
             id:uuid(),
@@ -61,6 +77,7 @@ const Input = () => {
       })
       setText("")
       setImg(null)
+      setFile(null)
 
     } catch (error) {
     console.log(error);
@@ -70,7 +87,10 @@ const Input = () => {
     <div className={styles.input}>
         <input type="text"  placeholder='Type something...' value={text} onChange={e=>setText(e.target.value)} onKeyDown={ (e)=>e.code==="Enter" && handleSend()}/>
         <div className={styles.send}>
-            <MdAttachFile/>
+            <input type="file"  id="file1" style={{display:"none"}}   onChange={e=>setFile(e.target.files[0])} />
+            <label htmlFor="file1">
+              <MdAttachFile/>
+            </label>
             <input type="file"  id="file" style={{display:"none"}}   onChange={e=>setImg(e.target.files[0])} />
             <label htmlFor="file">
                 <RiImageAddFill/>
