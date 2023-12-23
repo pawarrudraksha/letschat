@@ -1,0 +1,25 @@
+.messages{
+    background-color: #ddddf7;
+    padding: 10px;
+    height: calc(100% - 160px);
+    overflow: scroll;
+    overflow-x: hidden;
+}
+::-webkit-scrollbar {
+    width: 6px; /* Adjust as needed */
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #ddddf7; /* Change the color as desired */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #5d5b8d; /* Change the color as desired */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #5d5b8d; /* Change the color as desired */
+}
