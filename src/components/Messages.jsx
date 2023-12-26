@@ -1,18 +1,20 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import Message from './Message';
 import styles from '../styles/messages.module.css';
 import { ChatContext } from '../context/ChatContext';
-import { doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import { GroupContext } from '../context/GroupContext';
+import { SearchMessageContext } from '../context/SearchMessageContext';
 
 const Messages = () => {
   const [messages, setMessages] = useState([]);
-  // const [grpMessages, setGrpMessages] = useState([]);
   const { data } = useContext(ChatContext);
-  const { groupId, chatType,groupData ,getGroupById} = useContext(GroupContext);
+  const { groupId, chatType, groupData, getGroupById } = useContext(GroupContext);
+  const { selectedMessageId } = useContext(SearchMessageContext);
+  const [grpMessages,setGrpMessages] = useState([]);
+  const messagesContainerRef = useRef(null);
 
-  const grpMessages=groupData?.messages
   useEffect(() => {
     const unsubscribeUserChat = () => {};
 
@@ -31,12 +33,26 @@ const Messages = () => {
 
   useEffect(() => {
     if (groupId && chatType === 'group') {
-      getGroupById(groupId);
+      const onSub = onSnapshot(doc(db, 'groups', groupId), (doc) => {
+        doc.exists() && setGrpMessages(doc.data()?.messages || []);
+      });
+
+      return () => {
+        onSub();
+      };    }
+  }, [groupId, chatType,]);
+
+  useEffect(() => {
+    if (selectedMessageId && messagesContainerRef.current) {
+      const selectedMessageElement = messagesContainerRef.current.querySelector(`[data-message-id="${selectedMessageId}"]`);
+      if (selectedMessageElement) {
+        selectedMessageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
-  }, [groupId, chatType]);
+  }, [selectedMessageId]);
 
   return (
-    <div className={styles.messages}>
+    <div ref={messagesContainerRef} className={styles.messages}>
       {chatType === 'user' &&
         messages.map((m) => (
           <Message message={m} key={m.id} />

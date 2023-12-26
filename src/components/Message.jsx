@@ -38,7 +38,7 @@ const Message = ({message}) => {
     <div>
     {
       groupId?<>
-        <div ref={ref} className={`${styles.message} ${message.senderId===currentUser.uid && styles.owner}`}>
+        <div ref={ref} className={`${styles.message} ${message.senderId===currentUser.uid && styles.owner}`} data-message-id={message.id}>
             <div className={styles.messageInfo}>
                 <img src={message.senderId===currentUser.uid ? currentUser.photoURL : (groupMembersInfo?.find((mem)=>mem.id===message.senderId))?.data?.photoURL
                 } alt="sender" />
@@ -56,7 +56,7 @@ const Message = ({message}) => {
             </div>
         </div>
       </> :
-        (<div ref={ref} className={`${styles.message} ${message.senderId===currentUser.uid && styles.owner}`}>
+        (<div ref={ref} className={`${styles.message} ${message.senderId===currentUser.uid && styles.owner}`} data-message-id={message.id}>
             <div className={styles.messageInfo}>
                 <img src={message.senderId===currentUser.uid ? currentUser.photoURL :data.user.photoURL} alt="" />
                 <span>{formattedTime}</span>

@@ -1,7 +1,6 @@
 import { doc, getDoc } from "firebase/firestore";
-import { createContext, useContext, useReducer, useState } from "react";
+import { createContext, useReducer, useState } from "react";
 import { db } from "../firebase";
-import { UsersContext } from "./UsersContext";
 
 export const GroupContext = createContext();
 

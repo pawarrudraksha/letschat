@@ -11,10 +11,12 @@ import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { GroupContext } from '../context/GroupContext';
 import { UsersContext } from '../context/UsersContext';
+import { SearchMessageContext } from '../context/SearchMessageContext';
 
 const Chat = () => {
   const [isMenuOpen,setIsMenuOpen]=useState(false)
   const {groupData,getGroupById,groupMembersInfo,getMembersInfo,chatType}=useContext(GroupContext)
+  const {isSearchBarOpen,toggleSearchBar}=useContext(SearchMessageContext)
   const [isContactInfoOpen,setIsContactInfoOpen]=useState(false)
   const {data}=useContext(ChatContext)
   const {groupId}=useContext(GroupContext)
@@ -47,7 +49,7 @@ const Chat = () => {
       <div className={styles.chatInfo}>
           <span>{groupId? groupData.groupSubject:data.user?.displayName}</span>
           <div className={styles.chatIcons}>
-          <IoSearch  />
+          <IoSearch  onClick={toggleSearchBar}/>
           <BsCameraVideoFill />
           <MdMoreHoriz onClick={()=>setIsMenuOpen(!isMenuOpen)}/>
           </div>

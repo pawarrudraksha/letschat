@@ -14,7 +14,6 @@ const GroupModal = ({}) => {
     const [username,setUsername]=useState("")
     const [err,setErr]=useState(false)
     const { checkedUsers, toggleCheckedUser } = useContext(UsersContext);
-    console.log(users);
     const {  toggleGroupInfo,toggleGroup } = useContext(GroupContext);
     useEffect(()=>{
         

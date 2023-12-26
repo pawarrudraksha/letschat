@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styles from '../styles/chats.module.css'
+import { FaCamera } from "react-icons/fa";
 import { AuthContext } from '../context/AuthContext'
 import { onSnapshot,doc } from 'firebase/firestore'
 import { db } from '../firebase'
@@ -35,6 +36,7 @@ const Chats = () => {
     setGroupId(u)
     setChatType("group")
   }
+  
   return (
 <div className={styles.chats}>
       {Object.entries(chats)?.map((chat) => {
@@ -52,7 +54,7 @@ const Chats = () => {
             <img src={chat[1]?.userInfo.photoURL} alt="" />
                 <div className={styles.userChatInfo}>
                     <span>{chat[1]?.userInfo?.displayName}</span>
-                    <p>{chat[1]?.lastMessage?.text}</p>
+                    {chat[1]?.lastMessage?.text===''? <p className={styles.lastChatIsImage}><FaCamera/><p>Photo</p></p>   :<p>{chat[1]?.lastMessage?.text}</p>}
                 </div>
           </div>
           );

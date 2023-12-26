@@ -22,4 +22,15 @@
 .userChatInfo p{
     font-size: 14px;
     color: lightgray;
+    margin: 0px;
+    margin-top: 2px;
+}
+
+.lastChatIsImage{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    margin: 0px;
+    margin-top: 2px;
 }

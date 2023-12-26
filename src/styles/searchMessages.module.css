@@ -1,0 +1,43 @@
+.searchMessagesContainer{
+    flex: 1.2;
+    background: #3e3c61;
+    color: white;
+}
+.searchMessagesHeader{
+    display: flex;
+    align-items: center;
+    background-color: #2f2d52;
+    height: 50px;
+    padding: 10px;
+    color: #ddddf7;
+    gap: 20px;
+    font-size: 18px;
+}
+.searchMessagesHeader svg{
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    padding: 0px;
+    margin: 0px;
+}
+.searchBar{
+    display: flex;
+    padding: 10px;
+    border-bottom: 1px solid gray;
+}
+
+.searchBar input{
+    border: none;
+    outline: none;
+    background: transparent;
+    color: white;
+}
+.searchBar input::placeholder{
+    color: lightgray;
+}
+
+.searchedMessages{
+    padding:10px 15px ;
+    font-size: 14px;
+    border-bottom: 1px solid gray;
+}
