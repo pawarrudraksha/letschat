@@ -13,12 +13,11 @@ const Message = ({message}) => {
     ref.current?.scrollIntoView({behavior:"smooth"})
   },[message])
 
-  const date = new Date(message.data.seconds * 1000); // Convert seconds to milliseconds
+  const date = new Date(message.date.seconds * 1000); // Convert seconds to milliseconds
   const hours = date.getHours().toString().padStart(2, '0');
   const minutes = date.getMinutes().toString().padStart(2, '0');
   const seconds = date.getSeconds().toString().padStart(2, '0');
   const formattedTime = `${hours}:${minutes}`;
-  console.log(message);
   const handleDownload = async() => {
     try {
       const link = document.createElement('a');

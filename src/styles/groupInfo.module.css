@@ -1,0 +1,77 @@
+.groupInfoContainer{
+    display: flex;
+    flex-direction: column;
+    color: #ddddf7;
+}
+
+.groupIconLabel{
+    position: relative;
+}
+.groupIconContainer{
+    align-self: center;
+}
+.groupIcon svg{
+    width: 60px;
+    height: 60px;
+    margin: 0px;
+    padding: 0px;
+}
+.groupIcon{
+    background: #2f2d52;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    padding: 40px;
+    border-radius: 80px;
+    color: #3a474ecc;
+}
+.innerGroupIcon{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.groupSubject input{
+    border: none;
+    outline: none;
+    background: none;
+    width: 100%;
+    padding: 10px;
+    font-size: 18px;
+    margin: 0px;
+    margin: 40px 0px 0px 0px;
+    border-bottom: 1px solid gray;
+    color: lightgray;
+}
+.groupSubject input::placeholder{
+    color: lightgray;
+}
+
+.createGroupBtn svg{
+    width: 30px;
+    height: 30px;
+}
+.createGroupBtn {
+    width: 50px;
+    padding: 10px;
+    border-radius: 30px;
+    align-self: center;
+    cursor: pointer;
+    margin-top: 40px;
+    background: none;
+    border: none;
+    color: white;
+}
+
+.createGroupBtn:hover{
+    background: #2f2d52;
+}

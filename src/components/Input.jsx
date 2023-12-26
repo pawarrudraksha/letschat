@@ -4,20 +4,28 @@ import { MdAttachFile } from "react-icons/md";
 import { RiImageAddFill } from "react-icons/ri";
 import { AuthContext } from '../context/AuthContext';
 import { ChatContext } from '../context/ChatContext';
-import { Timestamp, arrayUnion, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { Timestamp, arrayUnion, doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db, storage } from '../firebase';
 import { v4 as uuid} from 'uuid';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { GroupContext } from '../context/GroupContext';
 
 
 const Input = () => {
+  const [groupMembers,setGroupMembers]=useState([])
   const {currentUser}=useContext(AuthContext)
   const {data}=useContext(ChatContext)
-
+  const {groupId}=useContext(GroupContext)
   const [text,setText]=useState("")
   const [img,setImg]=useState(null)
   const [file,setFile]=useState(null)
+  const getGroupById=async()=>{
+    const groupDocRef = doc(db, 'groups', groupId);
+    const groupSnapshot = await getDoc(groupDocRef);
+    setGroupMembers(groupSnapshot.data().groupMembers)
+  }
 
+  console.log(groupId);
   const handleSend=async()=>{
 
     try {
@@ -26,12 +34,12 @@ const Input = () => {
         const uploadTaskSnapshot = await uploadBytesResumable(storageRef, img);
         const downloadURL = await getDownloadURL(uploadTaskSnapshot.ref);
     
-        await updateDoc(doc(db,"chats",data.chatId),{
+        await updateDoc(doc(db,groupId ? "groups" : "chats",groupId ? groupId:data.chatId),{
           messages: arrayUnion({
             id:uuid(),
             text,
             senderId:currentUser.uid,
-            data:Timestamp.now(),
+            date:Timestamp.now(),
             img:downloadURL
           })
         })
@@ -40,41 +48,54 @@ const Input = () => {
         const uploadTaskSnapshot = await uploadBytesResumable(storageRef,file);
         const downloadURL = await getDownloadURL(uploadTaskSnapshot.ref);
     
-        await updateDoc(doc(db,"chats",data.chatId),{
+        await updateDoc(doc(db,groupId ? "groupId" : "chats",groupId ? groupId : data.chatId),{
           messages: arrayUnion({
             id:uuid(),
             text,
             senderId:currentUser.uid,
-            data:Timestamp.now(),
+            date:Timestamp.now(),
             file:downloadURL
           })
         })
       }
       else{
-        await updateDoc(doc(db,"chats",data.chatId),{
+        await updateDoc(doc(db,groupId ? "groups" : "chats",groupId ? groupId : data.chatId),{
           messages: arrayUnion({
             id:uuid(),
             text,
             senderId:currentUser.uid,
-            data:Timestamp.now()
+            date:Timestamp.now()
           })
         })
       }
 
-      await updateDoc(doc(db,"userChats",currentUser.uid),{
-        [data.chatId + ".lastMessage"]:{
-          text
-        },
-        [data.chatId + ".date"]:serverTimestamp()
-      })
-      setText("")
-      setImg(null)
+      if(groupId){
+
+        await getGroupById()
+        for (const memberId of groupMembers) {
+          await updateDoc(doc(db, "userChats", memberId), {
+            [groupId +".lastMessage"]: {
+              text
+            },
+            [groupId + ".date"]:serverTimestamp()
+          });
+        }
+      }else{
+
+        await updateDoc(doc(db,"userChats",currentUser.uid),{
+          [data.chatId + ".lastMessage"]:{
+            text
+          },
+          [data.chatId + ".date"]:serverTimestamp()
+        })
+    
       await updateDoc(doc(db,"userChats",data.user.uid),{
         [data.chatId + ".lastMessage"]:{
           text
         },
         [data.chatId + ".date"]:serverTimestamp()
       })
+    }
       setText("")
       setImg(null)
       setFile(null)

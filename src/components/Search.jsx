@@ -31,7 +31,6 @@ const Search = () => {
     try {
       const res=await getDoc(doc(db,"chats",combinedId))  
       if(!res.exists()){
-        console.log('jofpe');
         // create a chat in chats collection
         await setDoc(doc(db,"chats",combinedId),{messages:[]})
 

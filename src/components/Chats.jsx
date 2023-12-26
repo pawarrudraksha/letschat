@@ -4,11 +4,14 @@ import { AuthContext } from '../context/AuthContext'
 import { onSnapshot,doc } from 'firebase/firestore'
 import { db } from '../firebase'
 import { ChatContext } from '../context/ChatContext'
+import GroupSidebar from './GroupSidebar'
+import { GroupContext } from '../context/GroupContext'
 
 const Chats = () => {
   const [chats,setChats]=useState([])
   const {currentUser}=useContext(AuthContext)
-  const {dispatch}=useContext(ChatContext)
+  const {setGroupId,setChatType,clearGroupId}=useContext(GroupContext)
+  const {dispatch,chatId}=useContext(ChatContext)
   useEffect(()=>{
     const getChats=()=>{
       const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
@@ -21,21 +24,41 @@ const Chats = () => {
     currentUser.uid && getChats()
   },[currentUser.uid])
 
+ 
   const handleSelect=(u)=>{
     dispatch({type:"CHANGE_USER",payload:u})
+    clearGroupId()
+    setChatType("user")
+  }
+  const handleGroupSelect=(u)=>{
+    clearGroupId()
+    setGroupId(u)
+    setChatType("group")
   }
   return (
-    <div className={styles.chats}>
-
-      {Object.entries(chats)?.sort((a,b)=>b[1].date - a[1].date).map((chat)=>(
-        <div className={styles.userChat} key={chat[0]} onClick={()=>handleSelect(chat[1].userInfo)}>
-          <img src={chat[1].userInfo.photoURL} alt="" />
-              <div className={styles.userChatInfo}>
-                  <span>{chat[1].userInfo.displayName}</span>
-                  <p>{chat[1].lastMessage?.text}</p>
-              </div>
-      </div>
-    ))}
+<div className={styles.chats}>
+      {Object.entries(chats)?.map((chat) => {
+        if (chat[1]?.groupId) {
+          // Rendering group chat
+          return (
+            <div onClick={()=>handleGroupSelect(chat[1]?.groupId)}>
+              <GroupSidebar groupId={chat[1]?.groupId} key={chat[1]?.groupId} />            
+            </div>
+          );
+        } else {
+          // Rendering individual chat
+          return (
+            <div className={styles.userChat} key={chat[0]} onClick={()=>handleSelect(chat[1].userInfo)}>
+            <img src={chat[1]?.userInfo.photoURL} alt="" />
+                <div className={styles.userChatInfo}>
+                    <span>{chat[1]?.userInfo?.displayName}</span>
+                    <p>{chat[1]?.lastMessage?.text}</p>
+                </div>
+          </div>
+          );
+        }
+      })}
+    
     </div>
   )
 }

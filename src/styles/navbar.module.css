@@ -33,3 +33,8 @@
     border: none;
     cursor: pointer;
 }
+
+.navbar svg{
+    width: 30px;
+    height: 30px;
+}
