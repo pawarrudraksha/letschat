@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { collection, getDocs,getDoc, query, serverTimestamp, setDoc, updateDoc, where, doc } from 'firebase/firestore'
+import { collection, getDocs } from 'firebase/firestore'
 import { db } from '../firebase'
 import { AuthContext } from './AuthContext';
 
@@ -8,6 +8,7 @@ export const UsersContext = createContext();
 
 export const UsersContextProvider = ({ children }) => {
   const [users,setUsers]=useState(null)
+  const [rawUsers,setRawUsers]=useState(null)
   const {currentUser}=useContext(AuthContext)
   const [checkedUsers, setCheckedUsers] = useState({});
 
@@ -32,6 +33,7 @@ export const UsersContextProvider = ({ children }) => {
         });
       });
 
+      setRawUsers(usersArray)
       const filteredUsers=usersArray.filter((user)=>user.id!==currentUser.uid)
       setUsers(filteredUsers);
     } catch (error) {
@@ -40,7 +42,7 @@ export const UsersContextProvider = ({ children }) => {
   };
 
   return (
-    <UsersContext.Provider value={{ checkedUsers, toggleCheckedUser,clearCheckedUsers ,users,getAllUsers}}>
+    <UsersContext.Provider value={{ checkedUsers, toggleCheckedUser,clearCheckedUsers ,users,rawUsers,getAllUsers}}>
       {children}
     </UsersContext.Provider>
   );

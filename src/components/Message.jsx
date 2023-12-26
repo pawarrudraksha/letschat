@@ -3,12 +3,13 @@ import styles from '../styles/message.module.css'
 import { AuthContext } from '../context/AuthContext'
 import { ChatContext } from '../context/ChatContext'
 import { MdFileDownload } from "react-icons/md";
-import { storage } from '../firebase';
+import { GroupContext } from '../context/GroupContext';
 
 const Message = ({message}) => {
   const ref=useRef()
   const {currentUser}=useContext(AuthContext)
   const {data}=useContext(ChatContext)
+  const {groupId,groupMembersInfo}=useContext(GroupContext)
   useEffect(()=>{
     ref.current?.scrollIntoView({behavior:"smooth"})
   },[message])
@@ -34,21 +35,44 @@ const Message = ({message}) => {
     }
   }
   return (
-    <div ref={ref} className={`${styles.message} ${message.senderId===currentUser.uid && styles.owner}`}>
-        <div className={styles.messageInfo}>
-            <img src={message.senderId===currentUser.uid ? currentUser.photoURL :data.user.photoURL} alt="" />
-            <span>{formattedTime}</span>
-        </div>
-        <div className={styles.messageContent}>
-           {message.text && <p>{message.text}</p>}
-           {message.img && <img src={message.img} alt="" />}
-           {message.file && 
-           <div className={styles.fileDownload}>
-              <MdFileDownload onClick={handleDownload}/>
-              <p>Download</p>
+    <div>
+    {
+      groupId?<>
+        <div ref={ref} className={`${styles.message} ${message.senderId===currentUser.uid && styles.owner}`}>
+            <div className={styles.messageInfo}>
+                <img src={message.senderId===currentUser.uid ? currentUser.photoURL : (groupMembersInfo?.find((mem)=>mem.id===message.senderId))?.data?.photoURL
+                } alt="sender" />
+                <span>{formattedTime}</span>
             </div>
-            }
+            <div className={styles.messageContent}>
+              {message.text && <p>{message.text}</p>}
+              {message.img && <img src={message.img} alt="" />}
+              {message.file && 
+              <div className={styles.fileDownload}>
+                  <MdFileDownload onClick={handleDownload}/>
+                  <p>Download</p>
+                </div>
+                }
+            </div>
         </div>
+      </> :
+        (<div ref={ref} className={`${styles.message} ${message.senderId===currentUser.uid && styles.owner}`}>
+            <div className={styles.messageInfo}>
+                <img src={message.senderId===currentUser.uid ? currentUser.photoURL :data.user.photoURL} alt="" />
+                <span>{formattedTime}</span>
+            </div>
+            <div className={styles.messageContent}>
+              {message.text && <p>{message.text}</p>}
+              {message.img && <img src={message.img} alt="" />}
+              {message.file && 
+              <div className={styles.fileDownload}>
+                  <MdFileDownload onClick={handleDownload}/>
+                  <p>Download</p>
+                </div>
+                }
+            </div>
+        </div>)
+    }
     </div>
   )
 }

@@ -10,7 +10,6 @@ export const ChatContextProvider=({children})=>{
    }
    const {currentUser}=useContext(AuthContext)
    const chatReducer=(state,action)=>{
-       console.log(state.chatId);
         switch(action.type){
             case "CHANGE_USER":
                 return{

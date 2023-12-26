@@ -5,23 +5,20 @@ import styles from '../styles/chats.module.css'
 import { GroupContext } from '../context/GroupContext';
 
 const GroupSidebar = ({groupId}) => {
-    const [groupData,setGroupData]=useState({})
+    const {groupData,getGroupById}=useContext(GroupContext)
     useEffect(()=>{
-        getGroupById()
+        groupId && getGroupById(groupId)
     },[])
     
-    const getGroupById=async()=>{
-        const groupDocRef = doc(db, 'groups', groupId);
-        const groupSnapshot = await getDoc(groupDocRef);
-        setGroupData(groupSnapshot.data())
-    }
+   
     return (
         <div className={styles.userChat} >
             <img src={groupData?.groupImage} alt="" />
             <div className={styles.userChatInfo}>
                 <span>{groupData?.groupSubject}</span>
-                {/* <p>{groupData?.messages[groupData?.messages?.length-1].text}</p> */}
-            </div>
+                {groupData && groupData.messages && groupData.messages.length > 0 && (
+                    <p>{groupData.messages[groupData.messages.length - 1].text}</p>)} 
+                    </div>
         </div>  
        
     )  

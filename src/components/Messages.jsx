@@ -8,20 +8,11 @@ import { GroupContext } from '../context/GroupContext';
 
 const Messages = () => {
   const [messages, setMessages] = useState([]);
-  const [grpMessages, setGrpMessages] = useState([]);
+  // const [grpMessages, setGrpMessages] = useState([]);
   const { data } = useContext(ChatContext);
-  const { groupId, chatType } = useContext(GroupContext);
+  const { groupId, chatType,groupData ,getGroupById} = useContext(GroupContext);
 
-  const getGroupById = async () => {
-    try {
-      const groupDocRef = doc(db, 'groups', groupId);
-      const groupSnapshot = await getDoc(groupDocRef);
-      setGrpMessages(groupSnapshot.data()?.messages || []);
-    } catch (error) {
-      console.error('Error fetching group messages:', error);
-    }
-  };
-
+  const grpMessages=groupData?.messages
   useEffect(() => {
     const unsubscribeUserChat = () => {};
 
@@ -40,7 +31,7 @@ const Messages = () => {
 
   useEffect(() => {
     if (groupId && chatType === 'group') {
-      getGroupById();
+      getGroupById(groupId);
     }
   }, [groupId, chatType]);
 

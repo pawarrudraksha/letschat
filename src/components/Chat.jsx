@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { BsCameraVideoFill } from "react-icons/bs";
 import { IoSearch } from "react-icons/io5";
 import { IoMdArrowBack } from "react-icons/io";
@@ -9,12 +9,24 @@ import Input from './Input';
 import { ChatContext } from '../context/ChatContext';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
-import GroupModal from './GroupModal';
+import { GroupContext } from '../context/GroupContext';
+import { UsersContext } from '../context/UsersContext';
 
 const Chat = () => {
   const [isMenuOpen,setIsMenuOpen]=useState(false)
+  const {groupData,getGroupById,groupMembersInfo,getMembersInfo,chatType}=useContext(GroupContext)
   const [isContactInfoOpen,setIsContactInfoOpen]=useState(false)
   const {data}=useContext(ChatContext)
+  const {groupId}=useContext(GroupContext)
+  const {rawUsers,getAllUsers}=useContext(UsersContext)
+  useEffect(()=>{
+    groupId && getGroupById(groupId);
+  
+  },[groupId])
+  useEffect(()=>{
+    groupId && getAllUsers();
+    (groupId &&  rawUsers) && getMembersInfo(rawUsers)  
+  },[chatType])
   const deleteChat=async()=>{
     try {
       await deleteDoc(doc(db, "chats", data.chatId));
@@ -33,7 +45,7 @@ const Chat = () => {
     <div className={styles.chatContainer} >
     <div className={styles.chat}>
       <div className={styles.chatInfo}>
-          <span>{data.user?.displayName}</span>
+          <span>{groupId? groupData.groupSubject:data.user?.displayName}</span>
           <div className={styles.chatIcons}>
           <IoSearch  />
           <BsCameraVideoFill />
@@ -63,8 +75,10 @@ const Chat = () => {
                 <div className={styles.backButton}>
                   <IoMdArrowBack onClick={()=>setIsContactInfoOpen(false)}/>
                 </div>
-                  <img src={data.user?.photoURL} alt="" />
-                  <h1>{data.user?.displayName}</h1>
+                  <img src={groupId?groupData?.groupImage:data.user?.photoURL} alt="" />
+                  {groupId ?
+                   groupMembersInfo?.map((member)=>(<h1>{member.data.displayName}</h1>))
+                  :<h1>{data.user?.displayName}</h1>}
                 </div>
             </div>
           )

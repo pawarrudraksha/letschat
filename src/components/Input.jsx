@@ -25,7 +25,6 @@ const Input = () => {
     setGroupMembers(groupSnapshot.data().groupMembers)
   }
 
-  console.log(groupId);
   const handleSend=async()=>{
 
     try {

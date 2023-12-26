@@ -1,4 +1,7 @@
-import { createContext, useReducer } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { createContext, useContext, useReducer, useState } from "react";
+import { db } from "../firebase";
+import { UsersContext } from "./UsersContext";
 
 export const GroupContext = createContext();
 
@@ -10,6 +13,19 @@ export const GroupContextProvider = ({ children }) => {
     chatType:"",
   };
 
+  const [groupData,setGroupData]=useState({})
+  const [groupMembersInfo,setGroupMembersInfo]=useState([])
+
+  const getMembersInfo = (users) => {
+    const filteredUsers = users?.filter(user => groupData?.groupMembers.includes(user.id));
+    setGroupMembersInfo(filteredUsers);
+  };
+  
+  const getGroupById=async(groupId)=>{
+    const groupDocRef = doc(db, 'groups', groupId);
+    const groupSnapshot = await getDoc(groupDocRef);
+    setGroupData(groupSnapshot.data())
+  } 
 
   const groupReducer = (state, action) => {
     switch (action.type) {
@@ -55,7 +71,11 @@ export const GroupContextProvider = ({ children }) => {
       clearGroupId: () => dispatch({ type: "CLEAR_GROUP_ID" }),
       groupId:state.groupId,
       chatType:state.chatType,
-      setChatType: (chatType) => dispatch({ type: "SET_CHAT_TYPE",payload:chatType })
+      setChatType: (chatType) => dispatch({ type: "SET_CHAT_TYPE",payload:chatType }),
+      getGroupById,
+      groupData,
+      groupMembersInfo,
+      getMembersInfo
   }}>
       {children}
     </GroupContext.Provider>
