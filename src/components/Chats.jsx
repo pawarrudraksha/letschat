@@ -36,15 +36,14 @@ const Chats = () => {
     setGroupId(u)
     setChatType("group")
   }
-  
   return (
 <div className={styles.chats}>
       {Object.entries(chats)?.map((chat) => {
         if (chat[1]?.groupId) {
           // Rendering group chat
           return (
-            <div onClick={()=>handleGroupSelect(chat[1]?.groupId)}>
-              <GroupSidebar groupId={chat[1]?.groupId} key={chat[1]?.groupId} />            
+            <div onClick={()=>handleGroupSelect(chat[1]?.groupId)}  key={chat[0]}>
+              <GroupSidebar  groupData={chat[1]} />            
             </div>
           );
         } else {

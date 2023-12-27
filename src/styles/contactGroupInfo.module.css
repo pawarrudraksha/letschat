@@ -1,0 +1,102 @@
+.contactInfoOverlay{
+    flex: 1.2;
+    background: #3e3c61;
+    color: white;
+    padding: 0px;
+    height: auto;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+.contactInfoMenu{
+    width: 100%;
+    background: #3e3c61;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    align-items: center;
+}
+.contactInfoHeader{
+    display: flex;
+    align-items: center;
+    background-color: #2f2d52;
+    height: 50px;
+    padding: 10px;
+    color: #ddddf7;
+    gap: 20px;
+    font-size: 18px;
+    width: 100%;   
+    padding-left: 20px; 
+}
+
+.contactInfoHeader svg{
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+}
+.groupMembersInfoContainer img{
+    height: 200px;
+    width: 200px;
+    border-radius: 100px;
+}
+
+
+
+.groupMembersInfoContainer{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 20px;
+}
+
+.groupMembersHeader{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 10px solid #2f2d52;
+    padding-bottom: 15px;
+}
+.groupMembersHeader p{
+    padding: 0px;
+    margin: 0px;
+    font-size: 14px;
+}
+.groupMembersHeaderSubject{
+    font-size: 24px !important;
+}
+
+.groupMediaLinksAndDocs{
+    border-bottom: 10px solid #2f2d52;
+    padding-bottom: 15px;
+    padding-left: 20px;
+}
+
+.groupMembers{
+    display: flex;
+    flex-direction: column;
+}
+.groupMembersInfoSearchHeader{
+    padding: 0px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+.groupMemberInfo{
+    padding: 5px 20px;
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start;
+    cursor: pointer;
+}
+.groupMemberInfo:hover{
+    background-color: #2f2d52;
+}
+.groupMemberInfo img{
+    width: 40px;
+    height: 40px;
+}
+

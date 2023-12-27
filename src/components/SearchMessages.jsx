@@ -36,7 +36,6 @@ const SearchMessages = () => {
 
     return unsubscribeUserChat;
   }, [data.chatId, chatType]);  
-  console.log(chatMessages);
   const handleSearch=()=>{
     if(chatType==="group"){
       setSearchedMessages([])

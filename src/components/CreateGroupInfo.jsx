@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { MdDone } from "react-icons/md";
 import { FaUserGroup } from "react-icons/fa6";
 import { FaCamera } from "react-icons/fa";
-import styles from "../styles/groupInfo.module.css"
+import styles from "../styles/createGroupInfo.module.css"
 import { v4 as uuid} from 'uuid';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { UsersContext } from '../context/UsersContext';
@@ -11,7 +11,7 @@ import { db, storage } from '../firebase';
 import { AuthContext } from '../context/AuthContext';
 import { GroupContext } from '../context/GroupContext';
 
-const GroupInfo = () => {
+const CreateGroupInfo = () => {
     const {  toggleGroupInfo } = useContext(GroupContext);
     const {checkedUsers,clearCheckedUsers}=useContext(UsersContext)
     const {currentUser}=useContext(AuthContext)
@@ -42,7 +42,9 @@ const GroupInfo = () => {
                 await updateDoc(doc(db, "userChats", memberId), {
                   [groupId]: {
                     groupId: groupId,
-                    date: timestamp
+                    date: timestamp,
+                    groupImage:downloadURL,
+                    groupSubject:groupSubject
                   }
                 });
             }
@@ -86,4 +88,4 @@ const GroupInfo = () => {
     )
 }
 
-export default GroupInfo
+export default CreateGroupInfo

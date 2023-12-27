@@ -6,8 +6,9 @@ export const GroupContext = createContext();
 
 export const GroupContextProvider = ({ children }) => {
   const INITIAL_STATE = {
-    isGroupOpen: false,
-    isGroupInfoOpen:false,
+    isGroupOpen: false, // for creat group modal 1
+    isGroupInfoOpen:false,// for create group modal 2
+    isContactGroupInfo:false,// for contact and group information
     groupId:"",
     chatType:"",
   };
@@ -38,6 +39,11 @@ export const GroupContextProvider = ({ children }) => {
           ...state,
           isGroupInfoOpen: !state.isGroupInfoOpen,
         };
+      case "TOGGLE_CONTACT_GROUP_INFO":
+        return {
+          ...state,
+          isContactGroupInfo: !state.isContactGroupInfo,
+        };
       case "SET_GROUP_ID":
         return {
           ...state,
@@ -66,6 +72,8 @@ export const GroupContextProvider = ({ children }) => {
       toggleGroup: () => dispatch({ type: "TOGGLE" }),   
       isGroupInfoOpen: state.isGroupInfoOpen,
       toggleGroupInfo: () => dispatch({ type: "TOGGLE_GROUP_INFO", }),
+      isContactGroupInfo: state.isContactGroupInfo,
+      toggleContactGroupInfo: () => dispatch({ type: "TOGGLE_CONTACT_GROUP_INFO", }),
       setGroupId: (newGroupId) => dispatch({ type: "SET_GROUP_ID",payload:newGroupId }),
       clearGroupId: () => dispatch({ type: "CLEAR_GROUP_ID" }),
       groupId:state.groupId,

@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { BsCameraVideoFill } from "react-icons/bs";
 import { IoSearch } from "react-icons/io5";
-import { IoMdArrowBack } from "react-icons/io";
-import { MdMoreHoriz } from "react-icons/md";
+import { IoMdMore } from "react-icons/io";
 import styles from '../styles/chat.module.css'
 import Messages from './Messages';
 import Input from './Input';
@@ -10,25 +9,19 @@ import { ChatContext } from '../context/ChatContext';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { GroupContext } from '../context/GroupContext';
-import { UsersContext } from '../context/UsersContext';
 import { SearchMessageContext } from '../context/SearchMessageContext';
 
 const Chat = () => {
   const [isMenuOpen,setIsMenuOpen]=useState(false)
-  const {groupData,getGroupById,groupMembersInfo,getMembersInfo,chatType}=useContext(GroupContext)
-  const {isSearchBarOpen,toggleSearchBar}=useContext(SearchMessageContext)
-  const [isContactInfoOpen,setIsContactInfoOpen]=useState(false)
+  const {groupData,getGroupById,groupId,toggleContactGroupInfo}=useContext(GroupContext)
+  const {toggleSearchBar}=useContext(SearchMessageContext)
   const {data}=useContext(ChatContext)
-  const {groupId}=useContext(GroupContext)
-  const {rawUsers,getAllUsers}=useContext(UsersContext)
+
   useEffect(()=>{
     groupId && getGroupById(groupId);
   
   },[groupId])
-  useEffect(()=>{
-    groupId && getAllUsers();
-    (groupId &&  rawUsers) && getMembersInfo(rawUsers)  
-  },[chatType])
+ 
   const deleteChat=async()=>{
     try {
       await deleteDoc(doc(db, "chats", data.chatId));
@@ -39,7 +32,7 @@ const Chat = () => {
   }
 
   const toggleContactInfo=()=>{
-    setIsContactInfoOpen(!isContactInfoOpen)
+    toggleContactGroupInfo()
     setIsMenuOpen(false)
   }
 
@@ -51,7 +44,7 @@ const Chat = () => {
           <div className={styles.chatIcons}>
           <IoSearch  onClick={toggleSearchBar}/>
           <BsCameraVideoFill />
-          <MdMoreHoriz onClick={()=>setIsMenuOpen(!isMenuOpen)}/>
+          <IoMdMore onClick={()=>setIsMenuOpen(!isMenuOpen)}/>
           </div>
       </div>
       {
@@ -59,7 +52,7 @@ const Chat = () => {
       <div className={styles.overlay}>
           <ul className={styles.menu}>
             <li onClick={deleteChat}>Delete Chat</li>
-            <li onClick={toggleContactInfo}>Contact Info</li>
+            <li onClick={toggleContactInfo}>{groupId ? "Group Info" :"Chat Info"}</li>
             <li>Block</li>
           </ul> 
       </div>
@@ -68,26 +61,7 @@ const Chat = () => {
       <Messages/>
       <Input/>
     </div>
-    <div>
-
-        {
-          isContactInfoOpen && (
-            <div className={styles.contactInfoOverlay}>
-                <div className={styles.contactInfoMenu}>
-                <div className={styles.backButton}>
-                  <IoMdArrowBack onClick={()=>setIsContactInfoOpen(false)}/>
-                </div>
-                  <img src={groupId?groupData?.groupImage:data.user?.photoURL} alt="" />
-                  {groupId ?
-                   groupMembersInfo?.map((member)=>(<h1>{member.data.displayName}</h1>))
-                  :<h1>{data.user?.displayName}</h1>}
-                </div>
-            </div>
-          )
-        }
-        </div>
-   
-      </div>
+    </div>
   )
 }
 

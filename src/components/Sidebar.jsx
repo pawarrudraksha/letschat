@@ -5,16 +5,16 @@ import Search from './Search'
 import Chats from './Chats'
 import { GroupContext } from '../context/GroupContext'
 import GroupModal from './GroupModal'
-import GroupInfo from './GroupInfo'
+import CreateGroupInfo from './CreateGroupInfo'
 
 const Sidebar = () => {
-  const { isGroupOpen, isGroupInfoOpen,toggleGroupStatus } = useContext(GroupContext);
+  const { isGroupOpen, isGroupInfoOpen } = useContext(GroupContext);
   return (
     <div className={styles.sidebar}>
       <Navbar/>
       {isGroupOpen && <GroupModal/>}
-      {isGroupInfoOpen&&<GroupInfo/>}
-     {!isGroupInfoOpen && !isGroupOpen &&( <>
+      {isGroupInfoOpen&&<CreateGroupInfo/>}
+      {!isGroupInfoOpen && !isGroupOpen &&( <>
       <Search/>
       <Chats/>
       </>)
