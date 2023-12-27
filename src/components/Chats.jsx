@@ -22,8 +22,9 @@ const Chats = () => {
         unsub()
       }
     }
+    console.log("hekko");
     currentUser.uid && getChats()
-  },[currentUser.uid])
+  },[currentUser.uid,chatId])
 
  
   const handleSelect=(u)=>{
@@ -38,7 +39,7 @@ const Chats = () => {
   }
   return (
 <div className={styles.chats}>
-      {Object.entries(chats)?.map((chat) => {
+      {Object.entries(chats)?.sort((a,b)=>b[1].date - a[1].date)?.map((chat) => {
         if (chat[1]?.groupId) {
           // Rendering group chat
           return (
@@ -49,7 +50,7 @@ const Chats = () => {
         } else {
           // Rendering individual chat
           return (
-            <div className={styles.userChat} key={chat[0]} onClick={()=>handleSelect(chat[1].userInfo)}>
+            <div className={styles.userChat} key={chat[0]} onClick={()=>handleSelect(chat[1]?.userInfo)}>
             <img src={chat[1]?.userInfo.photoURL} alt="" />
                 <div className={styles.userChatInfo}>
                     <span>{chat[1]?.userInfo?.displayName}</span>
