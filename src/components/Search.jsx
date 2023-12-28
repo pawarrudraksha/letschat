@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react'
 import styles from '../styles/search.module.css'
+import { IoMdSearch } from "react-icons/io";
 import { collection, getDocs,getDoc, query, serverTimestamp, setDoc, updateDoc, where, doc } from 'firebase/firestore'
 import { db } from '../firebase'
 import { AuthContext } from '../context/AuthContext'
@@ -63,6 +64,7 @@ const Search = () => {
   return (
     <div className={styles.search}>
         <div className={styles.searchForm}>
+            <IoMdSearch/>
             <input type="text" placeholder='Find a user' value={username} onKeyDown={handleKey} onChange={(e)=>setUsername(e.target.value)} />
         </div>
         {err && <span>User not found!</span>}

@@ -21,6 +21,10 @@
 }
 .searchForm {
     padding: 10px;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 .searchForm input{
     background-color: transparent;

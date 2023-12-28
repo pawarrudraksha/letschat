@@ -31,9 +31,10 @@
 
 .overlay {
     position: absolute;
-    top: 7.5%;
+    top: 12%;
     right: 1%;
- 
+    width: 20%;
+    height: 20%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -44,15 +45,17 @@
     background: #5d5b8d;
     border-radius: 5px;
     padding: 0px;
+    width: 100%;
+     box-shadow: 0 2px 5px 0 #9e9cc3
     
 }
 
 .menu li{
-    border: 1px solid black;
     color: white;
     padding: 10px 15px;
     font-size: 15px;
     cursor: pointer;
+    text-align: start;
 }
 .menu li:hover{
     background-color: #9e9cc3;

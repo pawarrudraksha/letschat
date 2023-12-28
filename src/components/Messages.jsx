@@ -10,7 +10,7 @@ import { SearchMessageContext } from '../context/SearchMessageContext';
 const Messages = () => {
   const [messages, setMessages] = useState([]);
   const { data } = useContext(ChatContext);
-  const { groupId, chatType, groupData, getGroupById } = useContext(GroupContext);
+  const { groupId, chatType } = useContext(GroupContext);
   const { selectedMessageId } = useContext(SearchMessageContext);
   const [grpMessages,setGrpMessages] = useState([]);
   const messagesContainerRef = useRef(null);

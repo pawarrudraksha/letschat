@@ -14,16 +14,15 @@ import { AuthContext } from '../context/AuthContext';
 
 const Chat = () => {
   const [isMenuOpen,setIsMenuOpen]=useState(false)
-  const {groupData,getGroupById,groupId,toggleContactGroupInfo}=useContext(GroupContext)
+  const {groupData,getGroupById,groupId,toggleContactGroupInfo,setChatType,chatType}=useContext(GroupContext)
   const {toggleSearchBar}=useContext(SearchMessageContext)
   const {currentUser}=useContext(AuthContext)
   const {data}=useContext(ChatContext)
-  console.log(data);
   useEffect(()=>{
     groupId && getGroupById(groupId);
   
   },[groupId])
- 
+  const groupMembers=groupData?.groupMembers
   const deleteChat=async()=>{
     try {
       // Chat with chatId delete doc
@@ -43,14 +42,25 @@ const Chat = () => {
         [data.chatId]: deleteField()
       });
       setIsMenuOpen(false)
+      setChatType("")
     } catch (error) {
       console.log(error);
     }
   }
-
-  console.log(data);
   const clearChat=async()=>{
     try {
+    if(chatType==="group"){
+      await updateDoc(doc(db, "groups", groupId), {
+        messages: [],
+      });
+      for (const memberId of groupMembers) {
+        await updateDoc(doc(db, "userChats", memberId), {
+          [groupId +".lastMessage"]: '',
+          [groupId + ".date"]:serverTimestamp()
+        });
+      }
+      
+    }else{
       await updateDoc(doc(db, "chats", data.chatId), {
         messages: [],
       });
@@ -62,22 +72,47 @@ const Chat = () => {
       await updateDoc(doc(db,"userChats",data.user.uid),{
         [data.chatId + ".lastMessage"]:'',
         [data.chatId + ".date"]:serverTimestamp()
-       })
-       console.log("hello");
+      })
+    } 
+    setIsMenuOpen(false)
+  }catch (error) {
+    console.log(error);
+  }
+}
+
+  const exitGroup=async()=>{
+    try {
+      // remove group member from group
+      // remove all group relevant chats from userChats
+      const groupRef = doc(db, "groups", groupId);
+      const filteredDocs=groupData.groupMembers.filter((mem)=>mem!==currentUser.uid)
+        await updateDoc(groupRef, {
+         groupMembers: filteredDocs
+       });
+    
+      const userChatsRef = doc(db, "userChats", currentUser.uid);
+      await updateDoc(userChatsRef, {
+         [groupId]: deleteField()
+      });
+    
       setIsMenuOpen(false)
+      setChatType("")
     } catch (error) {
       console.log(error);
     }
   }
-
   const toggleContactInfo=()=>{
     toggleContactGroupInfo()
     setIsMenuOpen(false)
   }
-
+  
+  const closeChat=()=>{
+    setChatType("")
+    setIsMenuOpen(false)
+  }
   return (
     <div className={styles.chatContainer} >
-    <div className={styles.chat}>
+   {data && <div className={styles.chat}>
       <div className={styles.chatInfo}>
           <span>{groupId? groupData.groupSubject:data.user?.displayName}</span>
           <div className={styles.chatIcons}>
@@ -89,18 +124,33 @@ const Chat = () => {
       {
         isMenuOpen && (
       <div className={styles.overlay}>
-          <ul className={styles.menu}>
-            <li onClick={toggleContactInfo}>{groupId ? "Group Info" :"Chat Info"}</li>
+         {chatType==="user" ? <ul className={styles.menu}>
+            
+            <li onClick={toggleContactInfo}>Chat Info </li>
+            <li onClick={closeChat}>Close Chat </li>
             <li>Block</li>
             <li onClick={clearChat}>Clear Chat</li>
-            <li onClick={deleteChat}>Delete Chat</li>
+            <li onClick={deleteChat}>Delete Chat</li>    
+            </ul> 
+            :
+            <ul className={styles.menu}>
+            
+            <li onClick={toggleContactInfo}>Group Info</li>
+            <li onClick={closeChat}>Close Chat </li>
+            <li onClick={clearChat}>Clear Chat</li>
+            <li onClick={exitGroup}>Exit Group</li>
           </ul> 
+            
+          }
       </div>
         )
         }
       <Messages/>
       <Input/>
-    </div>
+    </div>}
+    {
+      !data && <>Hello</>
+    }
     </div>
   )
 }

@@ -6,6 +6,7 @@ import { ChatContextProvider } from './context/ChatContext';
 import GroupContextProvider from './context/GroupContext';
 import { UsersContextProvider } from './context/UsersContext';
 import { SearchMessageContextProvider } from './context/SearchMessageContext';
+import { HomeContextProvider } from './context/HomeContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,9 +15,11 @@ root.render(
     <GroupContextProvider>
       <UsersContextProvider>
         <SearchMessageContextProvider>
-        <React.StrictMode>
-          <App />
-        </React.StrictMode>
+          <HomeContextProvider>
+            <React.StrictMode>
+              <App />
+            </React.StrictMode>
+          </HomeContextProvider>
         </SearchMessageContextProvider>
       </UsersContextProvider>
     </GroupContextProvider>

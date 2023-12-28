@@ -22,7 +22,6 @@ const Chats = () => {
         unsub()
       }
     }
-    console.log("hekko");
     currentUser.uid && getChats()
   },[currentUser.uid,chatId])
 

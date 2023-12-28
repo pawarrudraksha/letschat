@@ -5,15 +5,16 @@ import { RxCross2 } from "react-icons/rx";
 import { IoSearch } from "react-icons/io5";
 import styles from '../styles/contactGroupInfo.module.css'
 import { ChatContext } from '../context/ChatContext';
+import { HomeContext } from '../context/HomeContext';
 
 const ContactGroupInfo = () => {
     const {rawUsers,getAllUsers}=useContext(UsersContext)
     const {groupId,groupData,groupMembersInfo,getMembersInfo,chatType,toggleContactGroupInfo}=useContext(GroupContext)
+    const {toggleViewPhoto}=useContext(HomeContext)
     useEffect(()=>{
         groupId && getAllUsers();
         (groupId &&  rawUsers) && getMembersInfo(rawUsers)  
       },[chatType])
-    console.log(groupId);
     const {data}=useContext(ChatContext)
    
     return (
@@ -27,7 +28,7 @@ const ContactGroupInfo = () => {
                 groupId 
                 ?<div className={styles.groupMembersInfoContainer}>
                     <div className={styles.groupMembersHeader}>
-                        <img src={groupId?groupData?.groupImage:data.user?.photoURL} alt="" />
+                        <img src={groupId?groupData?.groupImage:data.user?.photoURL} alt="" onClick={()=>toggleViewPhoto()} />
                         <p className={styles.groupMembersHeaderSubject}>{groupData?.groupSubject}</p>
                         <p>Group : {groupData?.groupMembers?.length} members </p>
                     </div>
@@ -48,7 +49,7 @@ const ContactGroupInfo = () => {
                         ))}
                     </div>
                 </div>
-                : <div className={styles.groupMembersInfoContainer}>
+                : <div className={styles.groupMembersInfoContainer} onClick={()=>toggleViewPhoto()}>
                     <div className={styles.groupMembersHeader}>
                         <img src={data.user?.photoURL} alt="" />
                         <p className={styles.groupMembersHeaderSubject}>{data.user?.displayName}</p>

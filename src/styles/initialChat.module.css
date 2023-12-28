@@ -1,0 +1,27 @@
+.initialChatContainer{
+    flex: 2;
+    background: #2f2d52;
+    height: 100vh;
+    position: relative;
+    box-shadow: 2px 2px 5px 0 #9e9cc3;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.initialChatInnerContainer{
+    width: 65%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.initialChatFooter{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
