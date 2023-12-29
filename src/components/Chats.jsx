@@ -2,30 +2,57 @@ import React, { useContext, useEffect, useState } from 'react'
 import styles from '../styles/chats.module.css'
 import { FaCamera } from "react-icons/fa";
 import { AuthContext } from '../context/AuthContext'
-import { onSnapshot,doc } from 'firebase/firestore'
+import { onSnapshot,doc, collection, getDocs, query, getDoc } from 'firebase/firestore'
 import { db } from '../firebase'
 import { ChatContext } from '../context/ChatContext'
 import GroupSidebar from './GroupSidebar'
 import { GroupContext } from '../context/GroupContext'
+import { UsersContext } from '../context/UsersContext';
 
 const Chats = () => {
   const [chats,setChats]=useState([])
   const {currentUser}=useContext(AuthContext)
   const {setGroupId,setChatType,clearGroupId}=useContext(GroupContext)
-  const {dispatch,chatId}=useContext(ChatContext)
-  useEffect(()=>{
-    const getChats=()=>{
-      const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
-        setChats(doc.data())
-      });
-      return ()=>{
-        unsub()
-      }
-    }
-    currentUser.uid && getChats()
-  },[currentUser.uid,chatId])
+  const {dispatch,chatId,isListen}=useContext(ChatContext)
+  const {getUserById}=useContext(UsersContext)
+  useEffect(() => {
+    const getChats = async () => {
+      if (currentUser && currentUser.uid) {
+        const userChatsRef = doc(db, 'userChats', currentUser.uid);
+        const docSnapshot = await getDoc(userChatsRef);
+  
+        if (docSnapshot.exists()) {
+          const chatData = docSnapshot.data();
+          const modifiedChats = {};
+          for (const key in chatData) {
+            const chatObject = chatData[key];
+            if(!chatObject.groupImage){
 
- 
+              const id=chatObject.userInfo.uid
+              const userInfo=await getUserById(id)
+              console.log("userInfo",userInfo);
+              const modifiedChat = { ...chatObject, userInfo: {...userInfo,
+                displayName:userInfo.displayName,
+                photoURL:userInfo.photoURL,
+              } }; 
+              modifiedChats[key] = modifiedChat;
+            }else{
+              const modifiedChat = { ...chatObject }; 
+              modifiedChats[key] = modifiedChat;
+            }
+            
+          }
+  
+          setChats(modifiedChats); 
+        }
+      }
+    };
+  
+    currentUser.uid && getChats();
+  }, [currentUser.uid,chatId,isListen]);
+  
+  
+  console.log(chats);
   const handleSelect=(u)=>{
     dispatch({type:"CHANGE_USER",payload:u})
     clearGroupId()

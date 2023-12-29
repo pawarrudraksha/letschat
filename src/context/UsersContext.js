@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore'
 import { db } from '../firebase'
 import { AuthContext } from './AuthContext';
 
@@ -41,8 +41,21 @@ export const UsersContextProvider = ({ children }) => {
     }
   };
 
+  const getUserById = async (userId) => {
+    try {
+      const userRef = doc(db, 'users', userId);
+      const userSnapshot = await getDoc(userRef);
+      if (userSnapshot.exists()) {
+        return userSnapshot.data();
+      }
+      return null;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <UsersContext.Provider value={{ checkedUsers, toggleCheckedUser,clearCheckedUsers ,users,rawUsers,getAllUsers}}>
+    <UsersContext.Provider value={{ checkedUsers, toggleCheckedUser,clearCheckedUsers ,users,rawUsers,getAllUsers,getUserById}}>
       {children}
     </UsersContext.Provider>
   );

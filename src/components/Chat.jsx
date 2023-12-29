@@ -17,7 +17,7 @@ const Chat = () => {
   const {groupData,getGroupById,groupId,toggleContactGroupInfo,setChatType,chatType}=useContext(GroupContext)
   const {toggleSearchBar}=useContext(SearchMessageContext)
   const {currentUser}=useContext(AuthContext)
-  const {data}=useContext(ChatContext)
+  const {data,toggleListener}=useContext(ChatContext)
   useEffect(()=>{
     groupId && getGroupById(groupId);
   
@@ -43,6 +43,7 @@ const Chat = () => {
       });
       setIsMenuOpen(false)
       setChatType("")
+      toggleListener()
     } catch (error) {
       console.log(error);
     }

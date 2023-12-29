@@ -4,12 +4,14 @@ import { IoMdSearch } from "react-icons/io";
 import { collection, getDocs,getDoc, query, serverTimestamp, setDoc, updateDoc, where, doc } from 'firebase/firestore'
 import { db } from '../firebase'
 import { AuthContext } from '../context/AuthContext'
+import { ChatContext } from '../context/ChatContext';
 
 const Search = () => {
   const [username,setUsername]=useState("")
   const [user,setUser]=useState(null)
   const [err,setErr]=useState(false)
   const {currentUser}=useContext(AuthContext)
+  const {toggleListener}=useContext(ChatContext)
   const handleSearch=async()=>{
     const q=query(collection(db,"users"),where("displayName","==",username))
     try {
@@ -39,8 +41,6 @@ const Search = () => {
         await updateDoc(doc(db,"userChats",currentUser.uid),{
           [combinedId+".userInfo"]:{
             uid:user.uid,
-            displayName:user.displayName,
-            photoURL:user.photoURL
           },
           [combinedId+".date"]:serverTimestamp()
           
@@ -48,8 +48,6 @@ const Search = () => {
         await updateDoc(doc(db,"userChats",user.uid),{
           [combinedId+".userInfo"]:{
             uid:currentUser.uid,
-            displayName:currentUser.displayName,
-            photoURL:currentUser.photoURL
           },
           [combinedId+".date"]:serverTimestamp()
 
@@ -60,6 +58,7 @@ const Search = () => {
     }
     setUser(null)
     setUsername("")
+    toggleListener()
   }
   return (
     <div className={styles.search}>

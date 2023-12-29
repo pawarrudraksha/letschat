@@ -6,7 +6,7 @@ import { BiSolidPencil } from "react-icons/bi";
 import styles from "../styles/updateProfile.module.css"
 import { IoMdArrowBack } from "react-icons/io";
 import { v4 as uuid} from 'uuid';
-import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { deleteObject, getDownloadURL, getMetadata, ref, uploadBytes, uploadBytesResumable } from 'firebase/storage';
 import { UsersContext } from '../context/UsersContext';
 import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import { db, storage } from '../firebase';
@@ -16,12 +16,17 @@ import ViewPhoto from './ViewPhoto';
 import { updateProfile } from 'firebase/auth';
 
 const UpdateProfle = () => {
+    
     const [isUpdatePhoto,setIsUpdatePhoto]=useState(false)
     const [isUpdateName,setIsUpdateName]=useState(false)
     const {currentUser}=useContext(AuthContext)
     const {toggleUpdateProfile,toggleViewPhoto}=useContext(HomeContext)
     const [displayName,setDisplayName]=useState(currentUser?.displayName)
+    const {rawUsers,getAllUsers}=useContext(UsersContext)
 
+    useEffect(()=>{
+        getAllUsers();
+      },[])
     const handleViewPhoto=()=>{
         toggleViewPhoto()
         setIsUpdatePhoto(!isUpdatePhoto)
@@ -47,17 +52,23 @@ const UpdateProfle = () => {
 
     const handleNameUpdate=async(e)=>{
         e.preventDefault();
-        const displayName=e.target.value
         setIsUpdateName(!isUpdateName)
+        const imageRef = ref(storage,`${currentUser?.displayName}`);
+        const newFileRef = ref(storage, `${displayName}`)
+        const metadata = await getMetadata(imageRef);    // Get the original file metadata
+        await uploadBytes(newFileRef, await getDownloadURL(imageRef), metadata);    // Copy the file to a new location with the new name
+        await deleteObject(imageRef);   // Delete the original file
         await updateProfile(currentUser, {
           displayName: displayName
         });
-    
-    
-        await updateDoc(doc(db, "users", currentUser?.uid), {
-            displayName:displayName,
-        });
-        // TODO update all occurrences of name
+        
+        const userDocRef = doc(db, 'users', currentUser?.uid);
+        await updateDoc(userDocRef, {
+          displayName: displayName,
+        }); 
+        console.log(displayName);
+        console.log("update name successful");
+
     }
 
     const handleUploadPhoto=async(e)=>{
@@ -77,7 +88,6 @@ const UpdateProfle = () => {
         await updateDoc(doc(db, "users", currentUser?.uid), {
             photoURL:downloadURL,
         });
-        // TODO update name of the image in storage
     }
      return (
         <div className={styles.profileInfoContainer}>
