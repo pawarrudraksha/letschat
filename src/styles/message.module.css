@@ -21,13 +21,14 @@
 }
 .messageContent{
     max-width: 80%;
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 .messageContent p{
     background-color: white;
-    padding: 10px;
+    padding: 14px;
     border-radius: 0px 10px 10px 10px;
     max-width: max-content;
 }
@@ -60,4 +61,26 @@
     display: flex;
     height: 40px;
     align-items: center;
+}
+
+.ownerText{
+    position: relative;
+}
+.ownerText p{
+    display: flex;
+}
+
+.ownerText svg{
+    display: none;
+    position: absolute;
+    right: 4px;
+    top: 25%;
+    cursor: pointer;
+}
+.ownerText:hover.ownerText svg{
+    display: block;
+}
+.ownerTextMessage{
+    margin: 0px;
+    padding: 0px !important;
 }

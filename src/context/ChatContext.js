@@ -10,7 +10,6 @@ export const ChatContextProvider=({children})=>{
    }
    const [isListen,setListener]=useState(false)
    const toggleListener=()=>{
-    console.log("hss");
     setListener(!isListen)
    }
    const {currentUser}=useContext(AuthContext)

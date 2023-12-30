@@ -1,0 +1,37 @@
+.messageModalContainer{
+    position: absolute;
+    z-index: 999;
+    bottom: 54%;
+    width: 140px;
+}
+.messageModalBelowContainer{
+    top: 0%;
+    font-size: 40px;
+}
+.messageModalContainer ul{
+    list-style: none;
+    background: #5d5b8d;
+    border-radius: 5px;
+    padding: 0px;
+    width: 100%;
+    box-shadow: 0 2px 5px 0 #9e9cc3;
+    z-index: 999;
+}
+
+.messageModalContainer ul li{
+    color: white;
+    padding: 10px 15px;
+    font-size: 15px;
+    cursor: pointer;
+    text-align: start;
+}
+.messageModalContainer ul li:hover{
+    background-color: #9e9cc3;
+}
+
+@media screen and (max-width:768px ){
+    .messageModalContainer
+    {
+        width: auto;
+    }
+}

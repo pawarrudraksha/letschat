@@ -13,8 +13,9 @@ const Chats = () => {
   const [chats,setChats]=useState([])
   const {currentUser}=useContext(AuthContext)
   const {setGroupId,setChatType,clearGroupId}=useContext(GroupContext)
-  const {dispatch,chatId,isListen}=useContext(ChatContext)
+  const {dispatch,chatId,isListen,toggleListener}=useContext(ChatContext)
   const {getUserById}=useContext(UsersContext)
+  console.log(isListen);
   useEffect(() => {
     const getChats = async () => {
       if (currentUser && currentUser.uid) {
@@ -30,7 +31,6 @@ const Chats = () => {
 
               const id=chatObject.userInfo.uid
               const userInfo=await getUserById(id)
-              console.log("userInfo",userInfo);
               const modifiedChat = { ...chatObject, userInfo: {...userInfo,
                 displayName:userInfo.displayName,
                 photoURL:userInfo.photoURL,
@@ -47,21 +47,22 @@ const Chats = () => {
         }
       }
     };
-  
+    console.log("refetchedCHats");
     currentUser.uid && getChats();
   }, [currentUser.uid,chatId,isListen]);
   
-  
-  console.log(chats);
   const handleSelect=(u)=>{
     dispatch({type:"CHANGE_USER",payload:u})
     clearGroupId()
     setChatType("user")
+    toggleListener()
+    console.log(chats);
   }
   const handleGroupSelect=(u)=>{
     clearGroupId()
     setGroupId(u)
     setChatType("group")
+    toggleListener()
   }
   return (
 <div className={styles.chats}>

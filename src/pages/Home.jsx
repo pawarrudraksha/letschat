@@ -11,11 +11,12 @@ import InitialChat from '../components/InitialChat'
 import { HomeContext } from '../context/HomeContext'
 import UpdateProfle from '../components/UpdateProfile'
 import ViewPhoto from '../components/ViewPhoto'
+import ForwardMessageModal from '../components/ForwardMessageModal'
 
 const Home = () => {
   const {isSearchBarOpen}=useContext(SearchMessageContext)
   const {isContactGroupInfo,chatType } = useContext(GroupContext);
-  const {isUpdateProfile,isViewPhoto}=useContext(HomeContext)
+  const {isUpdateProfile,isViewPhoto,isForwardMsg}=useContext(HomeContext)
   
   return (
     <div className={`${styles.home} ${isSearchBarOpen && styles.ifSearchOpenHomeStyle}`}>
@@ -26,6 +27,7 @@ const Home = () => {
         {isSearchBarOpen && <SearchMessages/>}
         {isContactGroupInfo && <ContactGroupInfo/>}
         {isViewPhoto && <ViewPhoto/>}
+        {isForwardMsg && <ForwardMessageModal/>}
       </div>
     </div>
   )

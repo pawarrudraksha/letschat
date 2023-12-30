@@ -76,6 +76,7 @@ const Chat = () => {
       })
     } 
     setIsMenuOpen(false)
+    toggleListener()
   }catch (error) {
     console.log(error);
   }

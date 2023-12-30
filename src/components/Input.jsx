@@ -14,7 +14,7 @@ import { GroupContext } from '../context/GroupContext';
 const Input = () => {
   const [groupMembers,setGroupMembers]=useState([])
   const {currentUser}=useContext(AuthContext)
-  const {data}=useContext(ChatContext)
+  const {data,toggleListener}=useContext(ChatContext)
   const {groupId}=useContext(GroupContext)
   const [text,setText]=useState("")
   const [img,setImg]=useState(null)
@@ -98,7 +98,7 @@ const Input = () => {
       setText("")
       setImg(null)
       setFile(null)
-
+      toggleListener()
     } catch (error) {
     console.log(error);
   }

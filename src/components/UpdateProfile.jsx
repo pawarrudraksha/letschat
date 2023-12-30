@@ -66,9 +66,6 @@ const UpdateProfle = () => {
         await updateDoc(userDocRef, {
           displayName: displayName,
         }); 
-        console.log(displayName);
-        console.log("update name successful");
-
     }
 
     const handleUploadPhoto=async(e)=>{
