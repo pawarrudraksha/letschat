@@ -54,6 +54,24 @@
     color: white;
     border-radius: 10px 0px 10px 10px;
 }
+.owner input{
+    background-color: #8da4f1;
+    color: white;
+    border-radius: 10px 0px 10px 10px;
+    padding:10px 14px;
+    font-size: 16px;
+    width: 100px;
+    margin-top: 18px;
+}
+.owner input::placeholder{
+    font-size: 16px !important;
+    background-color: black;
+    height: 1000px;
+}
+.owner svg{
+    color: white;
+}
+
 .owner .fileDownload{
     background-color: #8da4f1;
     color: white;

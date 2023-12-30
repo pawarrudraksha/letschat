@@ -15,7 +15,6 @@ const Chats = () => {
   const {setGroupId,setChatType,clearGroupId}=useContext(GroupContext)
   const {dispatch,chatId,isListen,toggleListener}=useContext(ChatContext)
   const {getUserById}=useContext(UsersContext)
-  console.log(isListen);
   useEffect(() => {
     const getChats = async () => {
       if (currentUser && currentUser.uid) {
@@ -47,7 +46,6 @@ const Chats = () => {
         }
       }
     };
-    console.log("refetchedCHats");
     currentUser.uid && getChats();
   }, [currentUser.uid,chatId,isListen]);
   
@@ -56,7 +54,6 @@ const Chats = () => {
     clearGroupId()
     setChatType("user")
     toggleListener()
-    console.log(chats);
   }
   const handleGroupSelect=(u)=>{
     clearGroupId()

@@ -83,7 +83,6 @@ const ForwardMessageModal = () => {
             });            
             }
           }
-        console.log("done");
         toggleForwardMsg()
         clearCheckedUsers()
         toggleListener()

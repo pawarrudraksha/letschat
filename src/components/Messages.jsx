@@ -9,12 +9,11 @@ import { SearchMessageContext } from '../context/SearchMessageContext';
 
 const Messages = () => {
   const [messages, setMessages] = useState([]);
-  const { data } = useContext(ChatContext);
-  const { groupId, chatType } = useContext(GroupContext);
+  const { data ,setLastMessage,lastMessage} = useContext(ChatContext);
+  const { groupId, chatType, } = useContext(GroupContext);
   const { selectedMessageId } = useContext(SearchMessageContext);
   const [grpMessages,setGrpMessages] = useState([]);
   const messagesContainerRef = useRef(null);
-
   useEffect(() => {
     const unsubscribeUserChat = () => {};
 
@@ -27,10 +26,12 @@ const Messages = () => {
         onSub();
       };
     }
-
     return unsubscribeUserChat;
   }, [data.chatId, chatType]);
-
+  useEffect(()=>{
+    const secondLastMessage=messages[messages?.length-2]?.text ? messages[messages?.length-2]?.text : ""
+    messages && setLastMessage(secondLastMessage ,messages[messages?.length-1]?.text) 
+  },[messages])
   useEffect(() => {
     if (groupId && chatType === 'group') {
       const onSub = onSnapshot(doc(db, 'groups', groupId), (doc) => {

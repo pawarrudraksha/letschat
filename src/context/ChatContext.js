@@ -9,9 +9,24 @@ export const ChatContextProvider=({children})=>{
         user:{}
    }
    const [isListen,setListener]=useState(false)
+   const [lastMessage,setIsLastMessage]=useState('')
+   const [secondLastMessage,setSecondLastMessage]=useState('')
+   const [isEditMessage, setIsEditMessage] = useState({});
+
+   const toggleIsEditMessages = (msgId) => {
+    setIsEditMessage((prev) => ({
+      ...prev,
+      [msgId]: !prev[msgId],
+    }));
+  };   
    const toggleListener=()=>{
     setListener(!isListen)
    }
+   const setLastMessage=(secondLastMessage,lastMessage)=>{
+    setSecondLastMessage(secondLastMessage)
+    setIsLastMessage(lastMessage)
+   }
+
    const {currentUser}=useContext(AuthContext)
    const chatReducer=(state,action)=>{
         switch(action.type){
@@ -27,7 +42,7 @@ export const ChatContextProvider=({children})=>{
    const [state,dispatch]=useReducer(chatReducer,INTIAL_STATE)
 
     return(
-        <ChatContext.Provider value={{data:state,dispatch,isListen,toggleListener}}>
+        <ChatContext.Provider value={{data:state,dispatch,isListen,toggleListener,setLastMessage,lastMessage,secondLastMessage,isEditMessage,toggleIsEditMessages}}>
             {children}
         </ChatContext.Provider>
     )
