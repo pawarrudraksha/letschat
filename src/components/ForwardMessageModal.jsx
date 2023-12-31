@@ -9,6 +9,7 @@ import { db } from '../firebase'
 import { HomeContext } from '../context/HomeContext'
 import { UsersContext } from '../context/UsersContext'
 import { ChatContext } from '../context/ChatContext';
+import { GroupContext } from '../context/GroupContext';
 
 const ForwardMessageModal = () => {
     const [userChats,setUserChats]=useState([])
@@ -16,6 +17,7 @@ const ForwardMessageModal = () => {
     const {forwardMsg,toggleForwardMsg}=useContext(HomeContext)
     const {getUserById,checkedUsers, toggleCheckedUser,clearCheckedUsers}=useContext(UsersContext)
     const {toggleListener}=useContext(ChatContext)
+    const {getGroupById,groupData}=useContext(GroupContext)
     const handleCheckboxChange = (userId) => {
       toggleCheckedUser(userId)
     };
@@ -81,6 +83,25 @@ const ForwardMessageModal = () => {
               },
               [chatId + ".date"]:serverTimestamp()
             });            
+            }else{
+              const groupId=key
+              await getGroupById(groupId)
+              await updateDoc(doc(db,"groups",groupId),{
+                messages: arrayUnion({
+                  id:uuid(),
+                  text:forwardMsg,
+                  senderId:currentUser.uid,
+                  date:Timestamp.now()
+                })
+              })
+              for (const member of groupData.groupMembers){
+                await updateDoc(doc(db, "userChats", member), {
+                  [groupId +".lastMessage"]: {
+                    text:forwardMsg
+                  },
+                  [groupId + ".date"]:serverTimestamp()
+                });
+              }
             }
           }
         toggleForwardMsg()

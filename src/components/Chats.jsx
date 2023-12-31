@@ -28,11 +28,11 @@ const Chats = () => {
             const chatObject = chatData[key];
             if(!chatObject.groupImage){
 
-              const id=chatObject.userInfo.uid
+              const id=chatObject?.userInfo?.uid
               const userInfo=await getUserById(id)
               const modifiedChat = { ...chatObject, userInfo: {...userInfo,
-                displayName:userInfo.displayName,
-                photoURL:userInfo.photoURL,
+                displayName:userInfo?.displayName,
+                photoURL:userInfo?.photoURL,
               } }; 
               modifiedChats[key] = modifiedChat;
             }else{
@@ -61,6 +61,7 @@ const Chats = () => {
     setChatType("group")
     toggleListener()
   }
+  console.log(chats);
   return (
 <div className={styles.chats}>
       {Object.entries(chats)?.sort((a,b)=>b[1].date - a[1].date)?.map((chat) => {

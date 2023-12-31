@@ -6,11 +6,13 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import { GroupContext } from '../context/GroupContext';
 import { SearchMessageContext } from '../context/SearchMessageContext';
+import { UsersContext } from '../context/UsersContext';
 
 const Messages = () => {
   const [messages, setMessages] = useState([]);
-  const { data ,setLastMessage,lastMessage} = useContext(ChatContext);
-  const { groupId, chatType, } = useContext(GroupContext);
+  const {rawUsers,getAllUsers}=useContext(UsersContext)
+  const { data ,setLastMessage} = useContext(ChatContext);
+  const { groupId, chatType,getMembersInfo } = useContext(GroupContext);
   const { selectedMessageId } = useContext(SearchMessageContext);
   const [grpMessages,setGrpMessages] = useState([]);
   const messagesContainerRef = useRef(null);
@@ -32,6 +34,10 @@ const Messages = () => {
     const secondLastMessage=messages[messages?.length-2]?.text ? messages[messages?.length-2]?.text : ""
     messages && setLastMessage(secondLastMessage ,messages[messages?.length-1]?.text) 
   },[messages])
+  useEffect(()=>{
+    const secondLastMessage=grpMessages[grpMessages?.length-2]?.text ? grpMessages[grpMessages?.length-2]?.text : ""
+    messages && setLastMessage(secondLastMessage ,grpMessages[grpMessages?.length-1]?.text) 
+  },[grpMessages])
   useEffect(() => {
     if (groupId && chatType === 'group') {
       const onSub = onSnapshot(doc(db, 'groups', groupId), (doc) => {
@@ -42,7 +48,10 @@ const Messages = () => {
         onSub();
       };    }
   }, [groupId, chatType,]);
-
+  useEffect(()=>{
+    groupId && getAllUsers();
+    (groupId &&  rawUsers) && getMembersInfo(rawUsers)  
+  },[chatType,groupId])
   useEffect(() => {
     if (selectedMessageId && messagesContainerRef.current) {
       const selectedMessageElement = messagesContainerRef.current.querySelector(`[data-message-id="${selectedMessageId}"]`);

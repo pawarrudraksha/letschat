@@ -5,7 +5,7 @@ export const ChatContext=createContext()
 
 export const ChatContextProvider=({children})=>{
    const INTIAL_STATE={
-        chatId:"null",
+        chatId:"",
         user:{}
    }
    const [isListen,setListener]=useState(false)
@@ -34,6 +34,11 @@ export const ChatContextProvider=({children})=>{
                 return{
                     user: action.payload,
                     chatId: currentUser?.uid>state.user?.uid ? currentUser.uid + state.user?.uid : state.user?.uid + currentUser.uid
+                }
+            case "CLEAR_USER":
+                return{
+                    user: {},
+                    chatId: ""
                 }
             default:
                 return state;

@@ -9,6 +9,8 @@ import { db, storage } from '../firebase';
 import { v4 as uuid} from 'uuid';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { GroupContext } from '../context/GroupContext';
+import ReplyMessage from './ReplyMessage';
+import { HomeContext } from '../context/HomeContext';
 
 
 const Input = () => {
@@ -16,6 +18,7 @@ const Input = () => {
   const {currentUser}=useContext(AuthContext)
   const {data,toggleListener}=useContext(ChatContext)
   const {groupId}=useContext(GroupContext)
+  const {isReplyMsg,setIsReplyMsg,replyMsg,setReplyMsg}=useContext(HomeContext)
   const [text,setText]=useState("")
   const [img,setImg]=useState(null)
   const [file,setFile]=useState(null)
@@ -63,7 +66,8 @@ const Input = () => {
             id:uuid(),
             text,
             senderId:currentUser.uid,
-            date:Timestamp.now()
+            replyMsg:replyMsg?.text || '',
+            date:Timestamp.now(),
           })
         })
       }
@@ -98,12 +102,16 @@ const Input = () => {
       setText("")
       setImg(null)
       setFile(null)
+      setIsReplyMsg(false)
+      setReplyMsg({})
       toggleListener()
     } catch (error) {
     console.log(error);
   }
   }
   return (
+    <>
+    {isReplyMsg &&  <ReplyMessage/>}
     <div className={styles.input}>
         <input type="text"  placeholder='Type something...' value={text} onChange={e=>setText(e.target.value)} onKeyDown={ (e)=>e.code==="Enter" && handleSend()}/>
         <div className={styles.send}>
@@ -118,6 +126,7 @@ const Input = () => {
             <button onClick={handleSend}>Send</button>
         </div>
     </div>
+    </>
   )
 }
 

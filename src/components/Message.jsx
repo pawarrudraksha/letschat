@@ -6,6 +6,7 @@ import { FaCheck } from "react-icons/fa6";
 import { AuthContext } from '../context/AuthContext'
 import { ChatContext } from '../context/ChatContext'
 import { GroupContext } from '../context/GroupContext';
+import { UsersContext } from '../context/UsersContext';
 import MessageModal from './MessageModal';
 import { doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -14,11 +15,10 @@ const Message = ({message}) => {
   const ref=useRef()
   const {currentUser}=useContext(AuthContext)
   const {data,isEditMessage,toggleIsEditMessages,lastMessage,toggleListener}=useContext(ChatContext)
-  const {groupId,groupMembersInfo}=useContext(GroupContext)
+  const {groupId,groupMembersInfo,chatType,groupData}=useContext(GroupContext)
   const [isMessageModalOpen,setIsMessageModalOpen]=useState(false)
   const [modalPosition, setModalPosition] = useState('below'); // Set initial position of modal
   const [editedText,setEditedText]=useState(message?.text)
-
   const handleModal=(e)=>{
     const messagePosition = e.clientY; // Get the Y coordinate of the clicked message
     const windowHeight = window.innerHeight;
@@ -31,9 +31,11 @@ const Message = ({message}) => {
 
     setIsMessageModalOpen(true);
   };
+  
   useEffect(()=>{
     ref.current?.scrollIntoView({behavior:"smooth"})
   },[message])
+
 
   const date = new Date(message.date.seconds * 1000); // Convert seconds to milliseconds
   const hours = date.getHours().toString().padStart(2, '0');
@@ -57,11 +59,10 @@ const Message = ({message}) => {
   }
   const handleEditMessage=async()=>{
     try {
-      const docRef = doc(db, "chats", chatId);
-      const docSnap = await getDoc(docRef);
-      const messages = docSnap.data().messages || [];
-      console.log(messages);
-      const newMessages = messages.map((msg) =>{
+        const docRef = doc(db, chatType==="user"?"chats":"groups",chatType==="user"? chatId:groupId);
+        const docSnap = await getDoc(docRef);
+        const messages = docSnap.data().messages || [];
+        const newMessages = messages.map((msg) =>{
         if(msg.id === message.id){
           return  {
             ...msg,
@@ -70,25 +71,36 @@ const Message = ({message}) => {
         }
         return msg
       });
-      console.log("newMessages",newMessages);
-      await updateDoc(docRef, { messages:newMessages });        
+      await updateDoc(docRef, { messages:newMessages }); 
+      if(chatType==='user'){       
+        if(lastMessage===message.text){
+          await updateDoc(doc(db, "userChats", data?.user?.uid), {
+            [chatId +".lastMessage"]: {
+              text:editedText
+            },
+            [chatId + ".date"]:serverTimestamp()
+          });
+          await updateDoc(doc(db, "userChats", currentUser?.uid), {
+            [chatId +".lastMessage"]: {
+              text:editedText
+            },
+            [chatId + ".date"]:serverTimestamp()
+          });            
+        }    
+    }else{
       if(lastMessage===message.text){
-        await updateDoc(doc(db, "userChats", data?.user?.uid), {
-          [chatId +".lastMessage"]: {
-            text:editedText
-          },
-          [chatId + ".date"]:serverTimestamp()
-        });
-        await updateDoc(doc(db, "userChats", currentUser?.uid), {
-          [chatId +".lastMessage"]: {
-            text:editedText
-          },
-          [chatId + ".date"]:serverTimestamp()
-        });            
-        console.log("done");
-      }    
-      toggleIsEditMessages(message.id)
-      toggleListener()
+        for(const member of groupData.groupMembers){
+          await updateDoc(doc(db, "userChats", member), {
+            [groupId +".lastMessage"]: {
+              text:editedText
+            },
+            [groupId + ".date"]:serverTimestamp()
+          });            
+        }  
+      }
+    }
+    toggleIsEditMessages(message.id)
+    toggleListener()
     } catch (error) {
       console.log(error);
     }   
@@ -112,9 +124,25 @@ const Message = ({message}) => {
                   <MessageModal isMessageModalOpen={isMessageModalOpen} setIsMessageModalOpen={setIsMessageModalOpen}  modalPosition={modalPosition} message={message}/>
                 )
                } 
-            <div className={`${!message.senderId===currentUser.uid ?styles.messageText:styles.ownerText}`}>
-                <p ><p className={styles.ownerTextMessage}>{message.text}</p>{message.senderId===currentUser.uid &&<FaChevronDown onClick={handleModal}/>}</p>
-              </div>              
+            {(message.text && !isEditMessage[message.id]) &&
+              <div className={`${!message.senderId===currentUser.uid ?styles.messageText:styles.ownerText}`}>
+                <p className={`${message.replyMsg && styles.replyMsgStyle}`}>
+                {message.replyMsg && <p className={styles.msgWhichIsReplied}>
+                    
+                    {message.replyMsg}
+                    </p> 
+                    }
+                  <p className={styles.ownerTextMessage}>{message.text}</p>
+                  {message.senderId===currentUser.uid &&<FaChevronDown onClick={handleModal}/>}
+                </p>
+              </div>}
+               {
+                isEditMessage[message.id] && <div className={`${!message.senderId===currentUser.uid ?styles.messageText:styles.ownerText}`}>
+              
+                <input type="text"  value={editedText} onChange={(e)=>setEditedText(e.target.value)} />
+                <FaCheck style={{height:"20px",width:"20px",marginTop:"12px"}} onClick={handleEditMessage}/>
+              </div>
+               }              
               {(isMessageModalOpen && modalPosition==='below') && (
                 <MessageModal isMessageModalOpen={isMessageModalOpen} setIsMessageModalOpen={setIsMessageModalOpen} modalPosition={modalPosition} message={message}/>
                 )
@@ -143,7 +171,15 @@ const Message = ({message}) => {
                } 
               {(message.text && !isEditMessage[message.id]) &&
               <div className={`${!message.senderId===currentUser.uid ?styles.messageText:styles.ownerText}`}>
-                <p ><p className={styles.ownerTextMessage}>{message.text}</p>{message.senderId===currentUser.uid &&<FaChevronDown onClick={handleModal}/>}</p>
+                <p className={`${message.replyMsg && styles.replyMsgStyle}`}>
+                  {message.replyMsg && <p className={styles.msgWhichIsReplied}>
+                    
+                    {message.replyMsg}
+                    </p> }
+                  <p className={styles.ownerTextMessage}>{message.text}
+                  </p>
+                  {message.senderId===currentUser.uid &&<FaChevronDown onClick={handleModal}/>}
+                </p>
               </div>
                }
 
@@ -159,6 +195,9 @@ const Message = ({message}) => {
                   <MessageModal isMessageModalOpen={isMessageModalOpen} setIsMessageModalOpen={setIsMessageModalOpen} modalPosition={modalPosition} message={message}/>
                 )
                }
+               
+
+               
               {message.img && <img src={message.img} alt="" />}
               {message.file && 
               <div className={styles.fileDownload}>

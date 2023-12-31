@@ -59,6 +59,11 @@ export const GroupContextProvider = ({ children }) => {
           ...state,
           chatType:action.payload
         };
+      case "CLEAR_CHAT_TYPE":
+        return {
+          ...state,
+          chatType:""
+        };
       default:
         return state;
     }
@@ -79,6 +84,7 @@ export const GroupContextProvider = ({ children }) => {
       groupId:state.groupId,
       chatType:state.chatType,
       setChatType: (chatType) => dispatch({ type: "SET_CHAT_TYPE",payload:chatType }),
+      clearChatType: () => dispatch({ type: "CLEAR_CHAT_TYPE"}),
       getGroupById,
       groupData,
       groupMembersInfo,

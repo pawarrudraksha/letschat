@@ -7,11 +7,18 @@ import { HiUserGroup } from "react-icons/hi2";
 import { GroupContext } from '../context/GroupContext'
 import { HomeContext } from '../context/HomeContext'
 import { RiUser3Fill } from "react-icons/ri";
+import { ChatContext } from '../context/ChatContext'
 
 const Navbar = () => {
   const {currentUser}=useContext(AuthContext)
-  const {  toggleGroup } = useContext(GroupContext);
+  const {  toggleGroup,clearChatType } = useContext(GroupContext);
+  const {dispatch}=useContext(ChatContext)
   const {toggleUpdateProfile}=useContext(HomeContext)
+  const handleLogout=()=>{
+    signOut(auth)
+    dispatch({type:"CLEAR_USER"})
+    clearChatType()
+  }
   return (
     <div className={styles.navbar}>
         <span className={styles.logo}>
@@ -19,8 +26,8 @@ const Navbar = () => {
         </span>
         <HiUserGroup onClick={()=>toggleGroup()}/>
         <div className={styles.user}>
-            {currentUser?.photoURL!==null ?<img src={currentUser.photoURL} alt onClick={()=>toggleUpdateProfile()}/> :<RiUser3Fill onClick={()=>toggleUpdateProfile()} className={styles.userSvg}/>}
-            <button onClick={()=>signOut(auth)}>logout</button>
+            {currentUser?.photoURL!==null ?<img src={currentUser.photoURL} alt="" onClick={()=>toggleUpdateProfile()}/> :<RiUser3Fill onClick={()=>toggleUpdateProfile()} className={styles.userSvg}/>}
+            <button onClick={handleLogout}>logout</button>
         </div>
     </div>
   )

@@ -6,7 +6,9 @@ export const HomeContextProvider=({children})=>{
     const [isUpdateProfile,setIsUpdateProfile]=useState(false)
     const [isViewPhoto,setIsViewPhoto]=useState(false)
     const [isForwardMsg,setIsForwardMsg]=useState(false)
+    const [isReplyMsg,setIsReplyMsg]=useState(false)
     const [forwardMsg,setForwardMsg]=useState('')
+    const [replyMsg,setReplyMsg]=useState({})
 
     const toggleUpdateProfile=()=>{
         setIsUpdateProfile(!isUpdateProfile)
@@ -21,7 +23,7 @@ export const HomeContextProvider=({children})=>{
         setForwardMsg(text)
     }
     return(
-        <HomeContext.Provider value={{isUpdateProfile,toggleUpdateProfile,isViewPhoto,toggleViewPhoto,isForwardMsg,toggleForwardMsg,forwardMsg,setForwardMsgText}}>
+        <HomeContext.Provider value={{isUpdateProfile,toggleUpdateProfile,isViewPhoto,toggleViewPhoto,isForwardMsg,toggleForwardMsg,forwardMsg,setForwardMsgText,isReplyMsg,setIsReplyMsg,replyMsg,setReplyMsg}}>
             {children}
         </HomeContext.Provider>
     )

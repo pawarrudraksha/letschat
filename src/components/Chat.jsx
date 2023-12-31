@@ -114,7 +114,7 @@ const Chat = () => {
   }
   return (
     <div className={styles.chatContainer} >
-   {data && <div className={styles.chat}>
+   <div className={styles.chat}>
       <div className={styles.chatInfo}>
           <span>{groupId? groupData.groupSubject:data.user?.displayName}</span>
           <div className={styles.chatIcons}>
@@ -149,10 +149,8 @@ const Chat = () => {
         }
       <Messages/>
       <Input/>
-    </div>}
-    {
-      !data && <>Hello</>
-    }
+    </div>
+
     </div>
   )
 }

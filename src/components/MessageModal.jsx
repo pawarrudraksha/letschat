@@ -6,13 +6,16 @@ import { arrayRemove, doc, getDoc, serverTimestamp, updateDoc } from 'firebase/f
 import { db } from '../firebase';
 import { ChatContext } from '../context/ChatContext';
 import { AuthContext } from '../context/AuthContext';
+import { GroupContext } from '../context/GroupContext';
 
 const MessageModal = ({isMessageModalOpen,setIsMessageModalOpen,modalPosition,message}) => {
-    const {setForwardMsgText,toggleForwardMsg}=useContext(HomeContext)
+    const {setForwardMsgText,toggleForwardMsg,setIsReplyMsg,setReplyMsg}=useContext(HomeContext)
     const {data,lastMessage,secondLastMessage,setLastMessage,toggleIsEditMessages,toggleListener}=useContext(ChatContext)
     const {currentUser}=useContext(AuthContext)
+    const {chatType,groupId,groupData}=useContext(GroupContext)
     const modalRef = useRef();
     const chatId=data?.chatId
+    
     useEffect(() => {
         const handleOutsideClick = (event) => {
           if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -35,15 +38,17 @@ const MessageModal = ({isMessageModalOpen,setIsMessageModalOpen,modalPosition,me
       }
       toggleForwardMsg()
     }
+
     const handleDeleteMessage=async()=>{
       try {
-        const docRef = doc(db, "chats", chatId);
+        const docRef = doc(db, chatType==='user'?"chats":"groups",chatType==='user'? chatId :groupId);
         const docSnap = await getDoc(docRef);
 
         const messages = docSnap.data().messages || [];
         const index = messages.findIndex(msg => msg.id === message.id);
         messages.splice(index, 1);
         await updateDoc(docRef, { messages });
+      if(chatType==='user'){
         
         if(lastMessage===message.text){
           await updateDoc(doc(db, "userChats", data?.user?.uid), {
@@ -59,9 +64,23 @@ const MessageModal = ({isMessageModalOpen,setIsMessageModalOpen,modalPosition,me
             [chatId + ".date"]:serverTimestamp()
           });            
         }    
-        setLastMessage('','')
-        setIsMessageModalOpen(false)
-        toggleListener()
+       
+      }else// for group
+      {
+        if(lastMessage===message.text){
+        for(const member of groupData.groupMembers){
+          await updateDoc(doc(db, "userChats",member), {
+            [groupId +".lastMessage"]: {
+              text:secondLastMessage
+            },
+            [groupId + ".date"]:serverTimestamp()
+          });        
+        }
+      }    
+      }
+      setLastMessage('','')
+      setIsMessageModalOpen(false)
+      toggleListener()
       } catch (error) {
         console.log(error);
       }   
@@ -71,11 +90,18 @@ const MessageModal = ({isMessageModalOpen,setIsMessageModalOpen,modalPosition,me
       toggleIsEditMessages(message.id)
       setIsMessageModalOpen(false)
     }
+
+    const handleReplyMsg=()=>{
+      setIsReplyMsg(true)
+      setReplyMsg(message)
+      setIsMessageModalOpen(false)
+    }
+    
     return (
       <div className={`${ modalPosition==="below" && styles.messageModalBelowContainer} ${styles.messageModalContainer}`} ref={modalRef}>
           <ul>
               <li >Message Info</li>
-              <li >Reply</li>
+              <li onClick={handleReplyMsg}>Reply</li>
               <li onClick={handleEditMessage}>Edit</li>
               <li onClick={handleForwardSelect}>Forward</li>
               <li onClick={handleDeleteMessage}>Delete</li>

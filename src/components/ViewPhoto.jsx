@@ -14,19 +14,20 @@ const ViewPhoto = () => {
     const handleViewPhotoClose=()=>{
         toggleViewPhoto()
     }
+    console.log(groupData);
     return (
         <div>
 
-        {(chatType && !isUpdateProfile) ?  <div className={styles.viewPhotoContainer}>
+        {(chatType!=='' && !isUpdateProfile) ?  <div className={styles.viewPhotoContainer}>
             <div className={styles.viewPhotoHeader}>
                 <div>
-                    <img src={(data?.user?.photoURL)? data?.user?.photoURL : groupData?.groupImage } alt="" />
-                    <p>{(data?.user?.displayName)? data?.user?.displayName : groupData?.groupSubject}</p>
+                    <img src={chatType==='user'? data?.user?.photoURL : groupData?.groupImage } alt="" />
+                    <p>{chatType==='user'? data?.user?.displayName : groupData?.groupSubject}</p>
                 </div>
                 <IoMdClose onClick={handleViewPhotoClose}/>
             </div>
             <div className={styles.viewPhotoImage}>
-                <img src={(data?.user?.photoURL)? data?.user?.photoURL : groupData?.groupImage } alt="" />
+                <img src={chatType==='user'? data?.user?.photoURL : groupData?.groupImage } alt="" />
             </div>
         </div> :
         <div className={styles.viewPhotoContainer}>

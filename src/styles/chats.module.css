@@ -24,6 +24,11 @@
     color: lightgray;
     margin: 0px;
     margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 200px;
+    white-space: nowrap;
+
 }
 
 .lastChatIsImage{

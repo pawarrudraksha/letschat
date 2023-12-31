@@ -66,10 +66,10 @@
 .owner input::placeholder{
     font-size: 16px !important;
     background-color: black;
-    height: 1000px;
 }
 .owner svg{
-    color: white;
+    color: black;
+    z-index: 999;
 }
 
 .owner .fileDownload{
@@ -83,17 +83,21 @@
 
 .ownerText{
     position: relative;
+    margin: 10px 0px;
 }
 .ownerText p{
     display: flex;
+    margin: 0px;
 }
 
 .ownerText svg{
     display: none;
     position: absolute;
     right: 4px;
-    top: 25%;
+    top: 1%;
     cursor: pointer;
+    color: white;
+    margin-top: 2px;
 }
 .ownerText:hover.ownerText svg{
     display: block;
@@ -101,4 +105,26 @@
 .ownerTextMessage{
     margin: 0px;
     padding: 0px !important;
+}
+
+.replyMsgStyle{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 10 px;
+    position: relative;
+}
+
+.msgWhichIsReplied{
+    background: #ddddf7 !important;
+    color: black !important;
+    padding: 5px 10px !important;
+    margin: 0px;
+    margin-bottom: 10px !important;
+    /* width: 104%; */
+    border-radius: 4px 0px 0px 4px !important;
+    border-left: 5px solid #3E3C61;
+    max-width: 100% !important;
+    
 }
